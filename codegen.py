@@ -266,12 +266,16 @@ class SourceGenerator(NodeVisitor):
     def visit_With(self, node):
         self.newline(node)
         self.write('with ')
-        self.visit(node.context_expr)
-        if node.optional_vars is not None:
-            self.write(' as ')
-            self.visit(node.optional_vars)
+        for item in node.items:
+            self.visit(item)
         self.write(':')
         self.body(node.body)
+
+    def visit_withitem(self, node):
+        self.visit(node.context_expr)
+        if node.optional_vars:
+            self.write(' as ')
+            self.visit(node.optional_vars)
 
     def visit_Pass(self, node):
         self.newline(node)
